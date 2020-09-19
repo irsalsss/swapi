@@ -43,7 +43,7 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div className="w-2/3 m-6" id="container-home-page">
+    <div className="w-2/3 h-screen m-6" id="container-home-page">
 
       <section id="top-home-page" className="flex-between-center">
         <Dropdown
@@ -58,9 +58,9 @@ const HomePage = () => {
         />
       </section>
 
-      <section id="mid-home-page" className="h-96">
+      <section id="mid-home-page" className="h-64 mt-12 w-full">
         {!isLoading && Object.keys(data).length !== 0 && (
-          <div className="border border-blue-500 text-blue-800 rounded">
+          <div className="py-4 px-6 border border-blue-500 text-blue-800 rounded w-1/2">
             <h2 className="font-bold text-xl mb-2">{data.filmsData.title}</h2>
           </div>
         )}
