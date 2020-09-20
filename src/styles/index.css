@@ -12,3 +12,7 @@
   height: 480px;
   overflow-y: auto;
 }
+
+.w-30-percent {
+  width: 30%;
+}

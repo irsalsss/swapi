@@ -4,9 +4,9 @@ import StarshipList from './StarshipList';
 const BodySection = ({ peopleData, isLoading, setIsLoading }) => {
 
   return (
-    <section id="mid-home-page" className="h-64 my-12 w-full">
+    <section id="mid-home-page" className="h-64 my-12 w-full flex flex-wrap justify-between">
       {peopleData.map((data, idx) => (
-        <div key={idx} className="py-4 px-6 mb-4 border border-blue-500 text-blue-800 rounded w-1/2">
+        <div key={idx} className="py-4 px-6 mb-4 border border-blue-500 text-blue-800 rounded w-30-percent">
           <h2 className="font-bold text-xl mb-2">{data.name}</h2>
 
           <div className="flex">

@@ -61,7 +61,7 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div className="w-2/3 h-720px m-6" id="container-home-page">
+    <div className="w-3/4 h-720px m-6" id="container-home-page">
 
       {isLoading.includes('films') ? (
         <HeaderLoading />

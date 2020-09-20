@@ -2,7 +2,7 @@ import React from 'react'
 
 const PaginationSection = ({ isLoading, listPage, currentPage, onChangeFilm }) => {
   return (
-    <section id="bottom-home-page" className="flex">
+    <section id="bottom-home-page" className="flex justify-center">
 
       <div
         className={
