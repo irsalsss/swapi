@@ -1,14 +1,16 @@
 import React, { useState, useRef } from 'react'
 import useOnClickOutside from '../../utils/useClickOutside'
 
-const Dropdown = ({ onChange, listValue, state}) => {
+const Dropdown = ({ onChange, listValue}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [dropdownValue, setDropdownValue] = useState(listValue[0].title)
   const dropdownRef = useRef()
   useOnClickOutside(dropdownRef, () => setIsDropdownOpen(false))
 
   const _onClick = (val) => {
     setIsDropdownOpen(false)
     onChange(val)
+    setDropdownValue(val.title)
   }
 
   return (
@@ -18,7 +20,7 @@ const Dropdown = ({ onChange, listValue, state}) => {
         className="py-1 px-2 w-56 flex-between-center border border-blue-500 text-blue-700 rounded cursor-pointer"
         onClick={() => setIsDropdownOpen(true)}
       >
-        <span>{state}</span>
+        <span>{dropdownValue}</span>
         <i className="fa fa-caret-down"></i>
       </div>
 
@@ -31,9 +33,9 @@ const Dropdown = ({ onChange, listValue, state}) => {
             <div
               key={idx}
               className="flex-between-center p-1 hover:text-blue-700"
-              onClick={() => _onClick(val)}
+              onClick={() => _onClick(val, idx + 1)}
             >
-              Star Wars Episode {val.title || val}
+              {val.title}
             </div>
           ))}
         </div>
