@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Loading from './components/shared/Loading';
 
+
 const HomePage = lazy(() => import('./pages/HomePage'))
 
 function App() {

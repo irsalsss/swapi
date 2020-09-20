@@ -22380,12 +22380,15 @@ video {
           animation: bounce 1s infinite;
 }
 
-/* flex */
-
 .flex-between-center {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+#mid-home-page {
+  height: 480px;
+  overflow-y: auto;
 }
 
 @media (min-width: 640px) {

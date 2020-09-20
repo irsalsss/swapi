@@ -2,9 +2,13 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* flex */
 .flex-between-center {
   @apply flex;
   @apply justify-between;
   @apply items-center;
+}
+
+#mid-home-page {
+  height: 480px;
+  overflow-y: auto;
 }
