@@ -4,6 +4,7 @@ import BodySection from '../components/homepage/BodySection';
 import PaginationSection from '../components/homepage/PaginationSection';
 import HeaderSection from '../components/homepage/HeaderSection';
 import { HeaderLoading, BodyLoading, PaginationLoading } from '../components/homepage/HomePageSkeleton';
+import useDebounce from "../utils/useDebounce";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(["films", "people"]);
@@ -11,6 +12,8 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [filmsData, setFilmsData] = useState([])
   const [peopleData, setPeopleData] = useState([])
+  const [search, setSearch] = useState("");
+  const debouncedSearchValue = useDebounce(search, 1000);
 
   const getDataFilms = async() => {
     let collection = []
@@ -38,16 +41,27 @@ const HomePage = () => {
     getDataPeople(collection[0].characters)
   }
 
-  const getDataPeople = async(peopleData) => {
+  const getDataPeople = async(peopleData, params = {}, endpoint) => {
     let newData = []
-    let promises = peopleData.map(async (url) => {
-      const { data, status } = await client(url, { method: "GET" })
-      if (status == 200){
-        newData.push(data)
-      }
-    })
 
-    await Promise.all(promises);
+    if (!search){
+      let promises = peopleData.map(async (url) => {
+        const { data, status } = await client(url, { params, method: "GET" })
+        if (status == 200){
+          newData.push(data)
+        }
+      })
+      await Promise.all(promises);
+    }
+
+    if (search){
+      const { data = [], status } = await client(endpoint, { params, method: "GET" })
+      console.log('data', data)
+      if (status == 200){
+        newData = data.results
+      }
+    }
+
     setPeopleData(newData)
     setIsLoading([])
   }
@@ -65,12 +79,14 @@ const HomePage = () => {
     setCurrentPage(page)
   }
 
-  console.log("filmsData", filmsData)
-  console.log("peopleData", peopleData)
-
   useEffect(() => {
-    getDataFilms(currentPage)
-  }, [])
+    if (search){
+      setIsLoading(["people"])
+      getDataPeople(0, { search }, `https://swapi.dev/api/people/`)
+    } else {
+      getDataFilms(currentPage)
+    }
+  }, [debouncedSearchValue])
 
   return (
     <div className="w-3/4 h-720px m-6" id="container-home-page">
@@ -81,6 +97,7 @@ const HomePage = () => {
         <HeaderSection
           onChangeFilm={onChangeFilm}
           filmsData={filmsData}
+          setSearch={setSearch}
         />
       )}
 

@@ -33,6 +33,10 @@ const BodySection = ({ peopleData, isLoading, setIsLoading }) => {
 
         </div>
       ))}
+
+      {peopleData.length == 0 && (
+        <h2 className="text-4xl text-blue-500 w-full flex items-center justify-center">The data is empty</h2>
+      )}
     </section>
   )
 }
