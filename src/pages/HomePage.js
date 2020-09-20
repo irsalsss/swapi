@@ -14,23 +14,26 @@ const HomePage = () => {
 
   const getDataFilms = async() => {
     let collection = []
+    let totalPage = 0
 
-    const promises = listPage.map(async (val) => {
+    const promises = listPage.map(async (val, idx) => {
       let url = `https://swapi.dev/api/films/${val}`
       const { data: response, status } = await client(url, { method: "GET" })
 
       if (status == 200){
         collection.push({...response, page: val})
+        totalPage++
       }
 
       if (status == 404){
-        collection.push({ title: `Star Wars Episode ${val}`, page: val })
+        console.log("not found")
       }
     })
 
     await Promise.all(promises)
     collection = collection.sort((a, b) => a.page - b.page)
     setFilmsData(collection)
+    setListPage(listPage.slice(0, totalPage))
     setIsLoading(["people"])
     getDataPeople(collection[0].characters)
   }
@@ -50,7 +53,16 @@ const HomePage = () => {
   }
 
   const onChangeFilm = (val) => {
-    setCurrentPage(val.page || val)
+    setIsLoading(["people"])
+    getDataPeople(val.characters)
+  }
+
+  const onPagination = (page) => {
+    const film = filmsData.find(data => data.page == page)
+    const characters = film.characters
+    setIsLoading(["people"])
+    getDataPeople(characters)
+    setCurrentPage(page)
   }
 
   console.log("filmsData", filmsData)
@@ -82,14 +94,14 @@ const HomePage = () => {
         />
       )}
 
-      {isLoading.includes('people') ? (
+      {isLoading.includes('films') ? (
         <PaginationLoading />
         ) : (
         <PaginationSection
           isLoading={isLoading}
           listPage={listPage}
           currentPage={currentPage}
-          onChangeFilm={onChangeFilm}
+          onChangeFilm={onPagination}
         />
       )}
     </div>

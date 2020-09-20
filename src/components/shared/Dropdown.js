@@ -28,7 +28,7 @@ const Dropdown = ({ onChange, listValue}) => {
         <div
           id="list-dropdown-value"
           ref={dropdownRef}
-          className="absolute bg-white left-0 h-56 w-56 border border-gray-500 rounded overflow-y-scroll cursor-pointer">
+          className="absolute bg-white left-0 h-48 w-56 border border-gray-500 rounded overflow-y-scroll cursor-pointer">
           {listValue.map((val, idx) => (
             <div
               key={idx}

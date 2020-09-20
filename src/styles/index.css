@@ -11,6 +11,7 @@
 #mid-home-page {
   height: 480px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .w-30-percent {

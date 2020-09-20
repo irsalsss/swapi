@@ -16,7 +16,7 @@ export const HeaderLoading = () => {
 
 export const PaginationLoading = () => {
   return (
-    <div className="h-8">
+    <div className="w-full h-8 flex justify-center">
       <Skeleton width="700px" />
     </div>
   )
@@ -24,26 +24,15 @@ export const PaginationLoading = () => {
 
 export const BodyLoading = () => {
   return (
-    <div id="mid-home-page" className="my-12">
-      <Skeleton width="700px" height="224px" />
-    </div>
-  )
-}
-
-export const StarshipsLoading = () => {
-  return (
-    <div>
-      <div className="mt-4">
-        <Skeleton width="200px" />
+    <div id="mid-home-page" className="my-12 w-full flex flex-wrap justify-between">
+      <div className="py-4 px-6 mb-4 w-30-percent">
+        <Skeleton height="254px" width="324px" />
       </div>
-      <div className="mt-1">
-        <Skeleton width="100px" />
+      <div className="py-4 px-6 mb-4 w-30-percent">
+        <Skeleton height="254px" width="324px" />
       </div>
-      <div className="mt-1">
-        <Skeleton width="100px" />
-      </div>
-      <div className="mt-1">
-        <Skeleton width="100px" />
+      <div className="py-4 px-6 mb-4 w-30-percent">
+        <Skeleton height="254px" width="324px" />
       </div>
     </div>
   )
