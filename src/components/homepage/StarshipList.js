@@ -10,7 +10,7 @@ const StarshipList = ({ starships, setIsLoading, cache }) => {
     let newData = []
     let promises = starships.map(async (url) => {
 
-      if (cache.current[url]){
+      if (cache?.current[url]){
         newData.push(cache.current[url])
       } else {
         const { data, status } = await client(url, { method: "GET" })

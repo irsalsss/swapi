@@ -6,10 +6,8 @@ const getDataForTesting = async (url) => {
   return data
 }
 
-const getData = (url) => {
+const getData = async(url) => {
   return axios.get(url)
-  .then(res => res.data)
-  .catch(err => err.response)
 }
 
 export { getDataForTesting, getData }
