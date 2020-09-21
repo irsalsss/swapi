@@ -10,6 +10,7 @@
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-error-boundary": "^3.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-skeleton-loader": "^1.0.4"

@@ -12,7 +12,7 @@ const HomePage = () => {
   const [listPage, setListPage] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filmsData, setFilmsData] = useState([]);
-  const [activeFilm, setActiveFilm] = useState(null);
+  const [activeFilm, setActiveFilm] = useState(1);
   const [peopleData, setPeopleData] = useState([]);
   const [search, setSearch] = useState("");
   const debouncedSearchValue = useDebounce(search, 1000);
@@ -35,19 +35,19 @@ const HomePage = () => {
 
     await Promise.all(promises)
     collection = manualPagination(collection)
+    const character = collection.find(data => data.episode_id == activeFilm)
     setFilmsData(collection)
-    setListPage(createDummyArray(1, collection[0].characters.length))
-    setActiveFilm(collection[0].episode_id)
+    setListPage(createDummyArray(1, character.characters.length))
     setIsLoading(["people"])
-    getDataPeople(collection[0].characters[0])
+    getDataPeople(character.characters[0])
   }
 
-  const getDataPeople = async(peopleData, params = {}, endpoint) => {
+  const getDataPeople = async(peopleData, endpoint, page = 1) => {
     let newData = []
 
     if (!search){
       let promises = peopleData.map(async (url) => {
-        const { data, status } = await client(url, { params, method: "GET" })
+        const { data, status } = await client(url, { method: "GET" })
         if (status == 200){
           newData.push(data)
         }
@@ -56,9 +56,12 @@ const HomePage = () => {
     }
 
     if (search){
+      let params = { search, page }
       const { data = [], status } = await client(endpoint, { params, method: "GET" })
+      console.log('data', data)
       if (status == 200){
         newData = data.results
+        setListPage(createDummyArray(1, Math.ceil(data.count / 10)))
       }
     }
 
@@ -73,6 +76,7 @@ const HomePage = () => {
 
   const onChangeFilm = (val) => {
     const character = val.characters
+    setSearch("")
     setIsLoading(["people"])
     setCurrentPage(1)
     setActiveFilm(val.episode_id)
@@ -81,11 +85,15 @@ const HomePage = () => {
   }
 
   const onPagination = (page) => {
-    const film = filmsData.find(data => data.episode_id == activeFilm)
-    const characters = film.characters[page - 1]
     setIsLoading(["people"])
-    getDataPeople(characters)
     setCurrentPage(page)
+    if (search){
+      getDataPeople(null, `https://swapi.dev/api/people/`, page)
+    } else {
+      const film = filmsData.find(data => data.episode_id == activeFilm)
+      const characters = film.characters[page - 1]
+      getDataPeople(characters)
+    }
   }
 
   useEffect(() => {
@@ -96,7 +104,7 @@ const HomePage = () => {
     if (!isLoading.includes("people")){
       if (search){
         setIsLoading(["people"])
-        getDataPeople(0, { search }, `https://swapi.dev/api/people/`)
+        getDataPeople(null, `https://swapi.dev/api/people/`)
       } else {
         onPagination(1)
       }
@@ -136,6 +144,8 @@ const HomePage = () => {
           onChangeFilm={onPagination}
         />
       )}
+
+      {}
     </div>
   )
 }
