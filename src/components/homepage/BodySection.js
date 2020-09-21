@@ -2,7 +2,7 @@ import React from 'react';
 import StarshipList from './StarshipList';
 import { urlToID } from '../../utils/Helper';
 
-const BodySection = ({ peopleData, isLoading, setIsLoading }) => {
+const BodySection = ({ peopleData, setIsLoading, cache }) => {
 
   return (
     <section id="mid-home-page" className="my-12 w-full flex flex-wrap justify-evenly">
@@ -30,7 +30,7 @@ const BodySection = ({ peopleData, isLoading, setIsLoading }) => {
             <p className="ml-2">{data.eye_color}</p>
           </div>
 
-          <StarshipList setIsLoading={setIsLoading} isLoading={isLoading} starships={data.starships} />
+          <StarshipList cache={cache} setIsLoading={setIsLoading} starships={data.starships} />
 
         </div>
       ))}

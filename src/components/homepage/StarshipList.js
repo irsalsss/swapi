@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import client from "../../client/ApiClient";
 import Modal from "../shared/Modal"
 
-const StarshipList = ({ starships, isLoading, setIsLoading }) => {
+const StarshipList = ({ starships, setIsLoading, cache }) => {
+
   const [starshipsData, setStarshipsData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState({open: false})
   const getStarshipsData = async() => {
     let newData = []
-    let promises = starships.map(async (data) => {
-      const { data: response, status } = await client(data, { method: "GET" })
-      if (status == 200){
-        newData.push(response)
+    let promises = starships.map(async (url) => {
+
+      if (cache.current[url]){
+        newData.push(cache.current[url])
+      } else {
+        const { data, status } = await client(url, { method: "GET" })
+        if (status == 200){
+          newData.push(data)
+          cache.current[url] = data
+        }
       }
+
     })
 
     await Promise.all(promises);
