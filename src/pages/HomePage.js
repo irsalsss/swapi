@@ -4,20 +4,21 @@ import BodySection from '../components/homepage/BodySection';
 import PaginationSection from '../components/homepage/PaginationSection';
 import HeaderSection from '../components/homepage/HeaderSection';
 import { HeaderLoading, BodyLoading, PaginationLoading } from '../components/homepage/HomePageSkeleton';
+import { splitArrayIntoPagination, createDummyArray } from "../utils/Helper";
 import useDebounce from "../utils/useDebounce";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(["films", "people"]);
   const [listPage, setListPage] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-  const [currentPage, setCurrentPage] = useState(1)
-  const [filmsData, setFilmsData] = useState([])
-  const [peopleData, setPeopleData] = useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filmsData, setFilmsData] = useState([]);
+  const [activeFilm, setActiveFilm] = useState(null);
+  const [peopleData, setPeopleData] = useState([]);
   const [search, setSearch] = useState("");
   const debouncedSearchValue = useDebounce(search, 1000);
 
   const getDataFilms = async() => {
     let collection = []
-    let totalPage = 0
 
     const promises = listPage.map(async (val, idx) => {
       let url = `https://swapi.dev/api/films/${val}/`
@@ -25,7 +26,6 @@ const HomePage = () => {
 
       if (status == 200){
         collection.push({...response, page: val})
-        totalPage++
       }
 
       if (status == 404){
@@ -34,11 +34,12 @@ const HomePage = () => {
     })
 
     await Promise.all(promises)
-    collection = collection.sort((a, b) => a.page - b.page)
+    collection = manualPagination(collection)
     setFilmsData(collection)
-    setListPage(listPage.slice(0, totalPage))
+    setListPage(createDummyArray(1, collection[0].characters.length))
+    setActiveFilm(collection[0].episode_id)
     setIsLoading(["people"])
-    getDataPeople(collection[0].characters)
+    getDataPeople(collection[0].characters[0])
   }
 
   const getDataPeople = async(peopleData, params = {}, endpoint) => {
@@ -56,7 +57,6 @@ const HomePage = () => {
 
     if (search){
       const { data = [], status } = await client(endpoint, { params, method: "GET" })
-      console.log('data', data)
       if (status == 200){
         newData = data.results
       }
@@ -66,25 +66,40 @@ const HomePage = () => {
     setIsLoading([])
   }
 
+  const manualPagination = (data) => {
+    data.map(val => { val.characters = splitArrayIntoPagination(val.characters) })
+    return data
+  }
+
   const onChangeFilm = (val) => {
+    const character = val.characters
     setIsLoading(["people"])
-    getDataPeople(val.characters)
+    setCurrentPage(1)
+    setActiveFilm(val.episode_id)
+    setListPage(createDummyArray(1, character.length))
+    getDataPeople(character[0])
   }
 
   const onPagination = (page) => {
-    const film = filmsData.find(data => data.page == page)
-    const characters = film.characters
+    const film = filmsData.find(data => data.episode_id == activeFilm)
+    const characters = film.characters[page - 1]
     setIsLoading(["people"])
     getDataPeople(characters)
     setCurrentPage(page)
   }
 
   useEffect(() => {
-    if (search){
-      setIsLoading(["people"])
-      getDataPeople(0, { search }, `https://swapi.dev/api/people/`)
-    } else {
-      getDataFilms(currentPage)
+    getDataFilms()
+  }, [])
+
+  useEffect(() => {
+    if (!isLoading.includes("people")){
+      if (search){
+        setIsLoading(["people"])
+        getDataPeople(0, { search }, `https://swapi.dev/api/people/`)
+      } else {
+        onPagination(1)
+      }
     }
   }, [debouncedSearchValue])
 

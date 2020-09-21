@@ -5,7 +5,7 @@ import { urlToID } from '../../utils/Helper';
 const BodySection = ({ peopleData, isLoading, setIsLoading }) => {
 
   return (
-    <section id="mid-home-page" className="my-12 w-full flex flex-wrap justify-between">
+    <section id="mid-home-page" className="my-12 w-full flex flex-wrap justify-evenly">
       {peopleData.map((data, idx) => (
         <div data-testid={`card-${urlToID(data.url)}`} key={idx} className="py-4 px-6 mb-4 border border-blue-500 text-blue-800 rounded w-30-percent">
           <h2 className="font-bold text-xl mb-2">{data.name}</h2>
