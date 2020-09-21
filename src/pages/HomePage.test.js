@@ -1,12 +1,15 @@
-import { getFilmsData } from "../utils/MockTesting";
+import axios from "axios";
+import { getData } from "../utils/MockTesting";
 
-jest.mock("../utils/MockTesting", () => {
-  return {
-    getFilmsData: jest.fn(),
-  };
-});
+describe("Homepage Component", () => {
+  test ("gets films data", async() => {
 
-it ("gets films data", async() => {
-  const response = await getFilmsData(1)
-  expect(getFilmsData).toHaveBeenCalled()
+    const films = ["A New Hope", "The Empire Strikes Back", "Return of the Jedi", "The Phantom Menace", "Attack of the Clones", "Revenge of the Sith"]
+    for (let i = 1; i < 7; i++){
+      getData(`https://swapi.dev/api/films/${i}/`).then(data => {
+        expect(data.title).toEqual(films[i])
+      })
+    }
+
+  })
 })

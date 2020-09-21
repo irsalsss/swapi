@@ -1,9 +1,15 @@
+import axios from "axios";
 import client from "../client/ApiClient";
 
-const getFilmsData = async (page) => {
-  let url = `https://swapi.dev/api/films/${page}/`
+const getDataForTesting = async (url) => {
   const { data, status } = await client(url, { method: "GET" })
   return data
 }
 
-export { getFilmsData }
+const getData = (url) => {
+  return axios.get(url)
+  .then(res => res.data)
+  .catch(err => err.response)
+}
+
+export { getDataForTesting, getData }
