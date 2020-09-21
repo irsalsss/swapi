@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom';
 import './styles/tailwind.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { stopReportingRuntimeErrors } from "react-error-overlay";
+
+if (process.env.NODE_ENV === "development") {
+  stopReportingRuntimeErrors(); // disables error overlays
+}
 
 ReactDOM.render(
   <React.StrictMode>

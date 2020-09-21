@@ -6,6 +6,7 @@ import HeaderSection from '../components/homepage/HeaderSection';
 import { HeaderLoading, BodyLoading, PaginationLoading } from '../components/homepage/HomePageSkeleton';
 import { splitArrayIntoPagination, createDummyArray } from "../utils/Helper";
 import useDebounce from "../utils/useDebounce";
+import { useHistory } from "react-router-dom";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(["films", "people"]);
@@ -16,6 +17,7 @@ const HomePage = () => {
   const [peopleData, setPeopleData] = useState([]);
   const [search, setSearch] = useState("");
   const debouncedSearchValue = useDebounce(search, 1000);
+  const history = useHistory();
 
   const getDataFilms = async() => {
     let collection = []
@@ -43,30 +45,34 @@ const HomePage = () => {
   }
 
   const getDataPeople = async(peopleData, endpoint, page = 1) => {
-    let newData = []
+    try {
+      let newData = []
 
-    if (!search){
-      let promises = peopleData.map(async (url) => {
-        const { data, status } = await client(url, { method: "GET" })
-        if (status == 200){
-          newData.push(data)
-        }
-      })
-      await Promise.all(promises);
-    }
-
-    if (search){
-      let params = { search, page }
-      const { data = [], status } = await client(endpoint, { params, method: "GET" })
-      console.log('data', data)
-      if (status == 200){
-        newData = data.results
-        setListPage(createDummyArray(1, Math.ceil(data.count / 10)))
+      if (!search){
+        let promises = peopleData.map(async (url) => {
+          const { data, status } = await client(url, { method: "GET" })
+          if (status == 200){
+            newData.push(data)
+          }
+        })
+        await Promise.all(promises);
       }
-    }
 
-    setPeopleData(newData)
-    setIsLoading([])
+      if (search){
+        let params = { search, page }
+        const { data = [], status } = await client(endpoint, { params, method: "GET" })
+        console.log('data', data)
+        if (status == 200){
+          newData = data.results
+          setListPage(createDummyArray(1, Math.ceil(data.count / 10)))
+        }
+      }
+
+      setPeopleData(newData)
+      setIsLoading([])
+    } catch (error) {
+      history.replace("/error");
+    }
   }
 
   const manualPagination = (data) => {
