@@ -20,7 +20,7 @@ const HomePage = () => {
     let totalPage = 0
 
     const promises = listPage.map(async (val, idx) => {
-      let url = `https://swapi.dev/api/films/${val}`
+      let url = `https://swapi.dev/api/films/${val}/`
       const { data: response, status } = await client(url, { method: "GET" })
 
       if (status == 200){
